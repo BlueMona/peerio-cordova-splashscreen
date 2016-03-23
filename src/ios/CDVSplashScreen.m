@@ -27,11 +27,20 @@
 
 @implementation CDVSplashScreen
 
+-(void)onTick:(NSTimer *)timer {
+    [self hide:nil];
+}
+
 - (void)pluginInitialize
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pageDidLoad) name:CDVPageDidLoadNotification object:nil];
 
     [self setVisible:YES];
+    // auto hide splash screen after 10 seconds
+    [NSTimer scheduledTimerWithTimeInterval: 10.0
+                      target: self
+                      selector:@selector(onTick:)
+                      userInfo: nil repeats:NO];
 }
 
 - (void)show:(CDVInvokedUrlCommand*)command
@@ -80,7 +89,7 @@
     [(CDVViewController *)self.viewController setEnabledAutorotation:autorotateValue];
 
     NSString* topActivityIndicator = [self.commandDelegate.settings objectForKey:[@"TopActivityIndicator" lowercaseString]];
-    UIActivityIndicatorViewStyle topActivityIndicatorStyle = UIActivityIndicatorViewStyleGray;
+    UIActivityIndicatorViewStyle topActivityIndicatorStyle = UIActivityIndicatorViewStyleWhiteLarge;
 
     if ([topActivityIndicator isEqualToString:@"whiteLarge"])
     {
@@ -98,7 +107,7 @@
     UIView* parentView = self.viewController.view;
     parentView.userInteractionEnabled = NO;  // disable user interaction while splashscreen is shown
     _activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:topActivityIndicatorStyle];
-    _activityView.center = CGPointMake(parentView.bounds.size.width / 2, parentView.bounds.size.height / 2);
+    _activityView.center = CGPointMake(parentView.bounds.size.width / 2, parentView.bounds.size.height * 2 / 3);
     _activityView.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleLeftMargin
         | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleRightMargin;
     [_activityView startAnimating];
@@ -394,13 +403,14 @@
         if (autoHideSplashScreenValue != nil) {
             autoHideSplashScreen = [autoHideSplashScreenValue boolValue];
         }
-
+      
         if (!autoHideSplashScreen) {
             // CB-10412 SplashScreenDelay does not make sense if the splashscreen is hidden manually
             splashDuration = 0;
         }
 
-
+        splashDuration = 1000;
+      
         if (fadeSplashScreenValue == nil)
         {
             fadeSplashScreenValue = @"true";
