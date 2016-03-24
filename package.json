@@ -1,6 +1,6 @@
 {
     "name": "com.peerio.cordova.plugin.splashscreen",
-    "version": "3.2.2",
+    "version": "3.2.4",
     "description": "Cordova Splashscreen Plugin",
     "cordova": {
         "id": "com.peerio.cordova.plugin.splashscreen",
